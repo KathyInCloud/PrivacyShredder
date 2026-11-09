@@ -53,8 +53,8 @@ CLEAN_SUFFIX = "_clean"    # 清理后的文件名后缀：photo.jpg -> photo_cl
 
 PDF_NOTE = "提示：PDF 的清理结果理论上可被还原（exiftool 的限制）"
 
-# Windows 本地断网运行版的下载地址（Releases 页面永远指向最新版本）
-DESKTOP_DOWNLOAD_URL = "https://github.com/KathyInCloud/PrivacyShredder/releases/latest"
+# Windows 本地断网运行版的下载直链（始终指向最新 Release 里的 PrivacyShredder.exe，点击后直接下载）
+DESKTOP_DOWNLOAD_URL = "https://github.com/KathyInCloud/PrivacyShredder/releases/latest/download/PrivacyShredder.exe"
 
 # 本地 Windows 运行时不弹出黑色控制台窗口（Linux 上这个值是 0）
 CREATE_NO_WINDOW = getattr(subprocess, "CREATE_NO_WINDOW", 0)
