@@ -47,11 +47,14 @@ VIDEO_TYPES = ["mp4", "mov", "m4v", "3gp", "3g2"]
 DOCUMENT_TYPES = ["pdf"]
 SUPPORTED_TYPES = IMAGE_TYPES + VIDEO_TYPES + DOCUMENT_TYPES
 
-MAX_TOTAL_MB = 300         # 单次上传的总大小上限，避免云端内存被撑爆
+MAX_TOTAL_MB = 200         # 单次上传的总大小上限，避免云端内存被撑爆（与 .streamlit/config.toml 的 maxUploadSize 保持一致）
 EXIFTOOL_TIMEOUT_S = 300   # 处理单个文件的最长时间（大视频可能比较慢）
 CLEAN_SUFFIX = "_clean"    # 清理后的文件名后缀：photo.jpg -> photo_clean.jpg
 
 PDF_NOTE = "提示：PDF 的清理结果理论上可被还原（exiftool 的限制）"
+
+# Windows 本地断网运行版的下载地址（Releases 页面永远指向最新版本）
+DESKTOP_DOWNLOAD_URL = "https://github.com/KathyInCloud/PrivacyShredder/releases/latest"
 
 # 本地 Windows 运行时不弹出黑色控制台窗口（Linux 上这个值是 0）
 CREATE_NO_WINDOW = getattr(subprocess, "CREATE_NO_WINDOW", 0)
@@ -262,6 +265,11 @@ CUSTOM_CSS = """
 }
 .stButton > button[kind="primary"]:disabled { opacity: .35; }
 
+/* 本地版推荐卡片 */
+.ps-promo-title { font-weight: 700; font-size: 1rem; margin: 0 0 .3rem; }
+.ps-promo-text { color: #aeaeb2; font-size: .92rem; line-height: 1.6; margin: 0; }
+[data-testid="stLinkButton"] a { border-radius: 14px; font-weight: 600; }
+
 /* 底部说明 */
 .ps-foot { text-align: center; color: #636366; font-size: .85rem; margin-top: 2.2rem; }
 </style>
@@ -284,6 +292,25 @@ def render_header():
         """,
         unsafe_allow_html=True,
     )
+
+
+def render_desktop_promo():
+    """在上传区下方推荐 Windows 本地断网运行版（适合极致隐私 / 超大文件）。"""
+    with st.container(border=True):
+        st.markdown(
+            '<p class="ps-promo-title">💻 想要更彻底的隐私保护？</p>'
+            '<p class="ps-promo-text">'
+            "如果您追求极致的隐私安全，或者需要处理超过 200MB 的超大文件，"
+            "推荐下载我们的 Windows 本地断网运行版——"
+            "全程在您自己的电脑上离线处理，文件不会经过任何服务器。"
+            "</p>",
+            unsafe_allow_html=True,
+        )
+        st.link_button(
+            "⬇️  下载 Windows 本地版",
+            DESKTOP_DOWNLOAD_URL,
+            width="stretch",
+        )
 
 
 def render_result(result):
@@ -350,6 +377,8 @@ def main():
         "支持拖拽多个文件：图片（JPG / PNG / HEIC / WebP / RAW 等）、"
         "视频（MP4 / MOV 等）、PDF"
     )
+
+    render_desktop_promo()
 
     total_bytes = sum(upload.size for upload in uploads)
     too_big = total_bytes > MAX_TOTAL_MB * 1024 * 1024
